@@ -7,18 +7,6 @@ namespace ClassRoom.API.Models
 {
     interface IClassRoomRepository
     {
-        List<StudentModel> GetStudent();
-        StudentModel GetStudentById(string id);
-        StudentModel CreateStudent(StudentModel data);
-        bool EditStudent(StudentModel stdData);
-        void RemoveStudent(string stdId);
-
-        List<TeacherModel> GetTeacher();
-        TeacherModel GetTeacherById(string id);
-        TeacherModel CreateTeacher(TeacherModel data);
-        bool EditTeacher(TeacherModel TeacherData);
-        void RemoveTeacher(string TeacherId);
-
         List<ClassRoomModel> GetClassRoom();
         ClassRoomModel GetDataByClassRoomId(string id);
         ClassRoomModel CreateClassRoom(string classroomId,string classroomName);

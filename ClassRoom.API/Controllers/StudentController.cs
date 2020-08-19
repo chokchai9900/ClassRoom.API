@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using ClassRoom.API.Interface;
 using ClassRoom.API.Models;
 using ClassRoom.API.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -14,7 +15,7 @@ namespace ClassRoom.API.Controllers
     [ApiController]
     public class StudentController : ControllerBase
     {
-        static readonly IClassRoomRepository _ClassRoomservice = new ClassRoomService();
+        static readonly IStudentManage _StudentService = new StudentService();
         /// <summary>
         /// Get All Student
         /// </summary>
@@ -22,7 +23,7 @@ namespace ClassRoom.API.Controllers
         [HttpGet]
         public List<StudentModel> GetStudent()
         {
-            return _ClassRoomservice.GetStudent(); ;
+            return _StudentService.GetStudent(); ;
         }
 
         /// <summary>
@@ -33,7 +34,7 @@ namespace ClassRoom.API.Controllers
         [HttpGet("{StdId}")]
         public StudentModel GetStudentById(string StdId)
         {
-            return _ClassRoomservice.GetStudentById(StdId);
+            return _StudentService.GetStudentById(StdId);
         }
 
         /// <summary>
@@ -43,7 +44,7 @@ namespace ClassRoom.API.Controllers
         [HttpPost]
         public void CreateStudent([FromBody] StudentModel data)
         {
-            _ClassRoomservice.CreateStudent(data);
+            _StudentService.CreateStudent(data);
         }
 
         /// <summary>
@@ -53,7 +54,7 @@ namespace ClassRoom.API.Controllers
         [HttpPut("{StudentModel}")]
         public void EditStudent([FromBody] StudentModel data)
         {
-            _ClassRoomservice.EditStudent(data);
+            _StudentService.EditStudent(data);
         }
 
         /// <summary>
@@ -63,7 +64,7 @@ namespace ClassRoom.API.Controllers
         [HttpDelete("{stdId}")]
         public void DeleteStudent(string stdId)
         {
-            _ClassRoomservice.RemoveStudent(stdId);
+            _StudentService.RemoveStudent(stdId);
         }
     }
 }

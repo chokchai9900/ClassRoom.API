@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using ClassRoom.API.Interface;
 using ClassRoom.API.Models;
 using ClassRoom.API.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -14,7 +15,7 @@ namespace ClassRoom.API.Controllers
     public class TeacherController : ControllerBase
     {
         // GET: api/<Teacher>
-        static readonly IClassRoomRepository _ClassRoomservice = new ClassRoomService();
+        static readonly ITeacherManage _TeacherService = new TeacherService();
         /// <summary>
         /// Get All teacher
         /// </summary>
@@ -22,7 +23,7 @@ namespace ClassRoom.API.Controllers
         [HttpGet]
         public List<TeacherModel> GetTeacher()
         {
-            return _ClassRoomservice.GetTeacher(); ;
+            return _TeacherService.GetTeacher(); ;
         }
 
         /// <summary>
@@ -33,7 +34,7 @@ namespace ClassRoom.API.Controllers
         [HttpGet("{StdId}")]
         public TeacherModel GetTeacherById(string StdId)
         {
-            return _ClassRoomservice.GetTeacherById(StdId);
+            return _TeacherService.GetTeacherById(StdId);
         }
 
         /// <summary>
@@ -43,7 +44,7 @@ namespace ClassRoom.API.Controllers
         [HttpPost]
         public void CreateTeacher([FromBody] TeacherModel data)
         {
-            _ClassRoomservice.CreateTeacher(data);
+            _TeacherService.CreateTeacher(data);
         }
 
         /// <summary>
@@ -53,7 +54,7 @@ namespace ClassRoom.API.Controllers
         [HttpPut("{TeacherModel}")]
         public void EditTeacher([FromBody] TeacherModel data)
         {
-            _ClassRoomservice.EditTeacher(data);
+            _TeacherService.EditTeacher(data);
         }
 
         /// <summary>
@@ -63,7 +64,7 @@ namespace ClassRoom.API.Controllers
         [HttpDelete("{techID}")]
         public void DeleteTeacher(string techID)
         {
-            _ClassRoomservice.RemoveTeacher(techID);
+            _TeacherService.RemoveTeacher(techID);
         }
     }
 }
