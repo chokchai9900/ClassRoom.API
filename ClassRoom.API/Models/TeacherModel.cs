@@ -10,6 +10,6 @@ namespace ClassRoom.API.Models
         public string teacherId { get; set; }
         public string teacherName { get; set; }
         public string teacherTel { get; set; }
-        public string teacherTaught { get; set; }
+        public string subjectTaught { get; set; }
     }
 }
