@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using ClassRoom.API.Interface;
+﻿using ClassRoom.API.Interface;
 using ClassRoom.API.Models;
 using ClassRoom.API.Services;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 
 namespace ClassRoom.API.Controllers
@@ -15,7 +13,7 @@ namespace ClassRoom.API.Controllers
     public class TeacherController : ControllerBase
     {
         // GET: api/<Teacher>
-        static readonly ITeacherManage _TeacherService = new TeacherService();
+        static readonly IPersionManage<TeacherModel> _TeacherService = new TeacherService();
         /// <summary>
         /// Get All teacher
         /// </summary>
@@ -23,7 +21,7 @@ namespace ClassRoom.API.Controllers
         [HttpGet]
         public async Task<ActionResult<List<TeacherModel>>> GetTeacher()
         {
-            return _TeacherService.GetTeacher(); ;
+            return _TeacherService.Get(); ;
         }
 
         /// <summary>
@@ -34,7 +32,7 @@ namespace ClassRoom.API.Controllers
         [HttpGet("{StdId}")]
         public async Task<ActionResult<TeacherModel>> GetTeacherById(string StdId)
         {
-            var teacher = _TeacherService.GetTeacherById(StdId);
+            var teacher = _TeacherService.GetById(StdId);
             if (teacher == null)
             {
                 return NotFound();
@@ -49,7 +47,7 @@ namespace ClassRoom.API.Controllers
         [HttpPost]
         public void CreateTeacher([FromBody] TeacherModel data)
         {
-            _TeacherService.CreateTeacher(data);
+            _TeacherService.Create(data);
         }
 
         /// <summary>
@@ -59,7 +57,7 @@ namespace ClassRoom.API.Controllers
         [HttpPut("{TeacherModel}")]
         public async Task<IActionResult> EditTeacher([FromBody] TeacherModel data)
         {
-            var result = _TeacherService.EditTeacher(data);
+            var result = _TeacherService.Edit(data);
             if (result)
             {
                 return Ok();
@@ -77,17 +75,17 @@ namespace ClassRoom.API.Controllers
         [HttpDelete("{techID}")]
         public async Task<IActionResult> DeleteTeacher(string techID)
         {
-            var validate = _TeacherService.GetTeacherById(techID);
+            var validate = _TeacherService.GetById(techID);
             if (validate != null)
             {
-                _TeacherService.RemoveTeacher(techID);
+                _TeacherService.Remove(techID);
                 return Ok();
             }
             else
             {
                 return BadRequest();
             }
-            
+
         }
     }
 }

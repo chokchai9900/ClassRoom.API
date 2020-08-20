@@ -7,10 +7,10 @@ using System.Threading.Tasks;
 
 namespace ClassRoom.API.Services
 {
-    public class TeacherService : ITeacherManage
+    public class TeacherService : IPersionManage<TeacherModel>
     {
         private List<TeacherModel> _TeacherList = new List<TeacherModel>();
-        public TeacherModel CreateTeacher(TeacherModel data)
+        public TeacherModel Create(TeacherModel data)
         {
             if (data == null)
             {
@@ -20,7 +20,7 @@ namespace ClassRoom.API.Services
             return data;
         }
 
-        public bool EditTeacher(TeacherModel TeacherData)
+        public bool Edit(TeacherModel TeacherData)
         {
             if (TeacherData == null)
             {
@@ -36,17 +36,17 @@ namespace ClassRoom.API.Services
             return true;
         }
 
-        public List<TeacherModel> GetTeacher()
+        public List<TeacherModel> Get()
         {
             return _TeacherList;
         }
 
-        public TeacherModel GetTeacherById(string id)
+        public TeacherModel GetById(string id)
         {
             return _TeacherList.Find(it => it.teacherId == id);
         }
 
-        public void RemoveTeacher(string TeacherId)
+        public void Remove(string TeacherId)
         {
             _TeacherList.RemoveAll(it => it.teacherId == TeacherId);
         }

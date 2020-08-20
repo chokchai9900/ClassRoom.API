@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Permissions;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using ClassRoom.API.Models;
 using ClassRoom.API.Services;
 using Microsoft.AspNetCore.Mvc;
-
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace ClassRoom.API.Controllers
 {

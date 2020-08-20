@@ -7,10 +7,10 @@ using System.Threading.Tasks;
 
 namespace ClassRoom.API.Services
 {
-    public class StudentService : IStudentManage
+    public class StudentService : IPersionManage<StudentModel>
     {
         private List<StudentModel> _StudentList = new List<StudentModel>();
-        public StudentModel CreateStudent(StudentModel data)
+        public StudentModel Create(StudentModel data)
         {
             if (data == null)
             {
@@ -20,7 +20,7 @@ namespace ClassRoom.API.Services
             return data;
         }
 
-        public bool EditStudent(StudentModel stdData)
+        public bool Edit(StudentModel stdData)
         {
             if (stdData == null)
             {
@@ -36,17 +36,17 @@ namespace ClassRoom.API.Services
             return true;
         }
 
-        public List<StudentModel> GetStudent()
+        public List<StudentModel> Get()
         {
             return _StudentList;
         }
 
-        public StudentModel GetStudentById(string id)
+        public StudentModel GetById(string id)
         {
             return _StudentList.Find(it => it.studentId == id);
         }
 
-        public void RemoveStudent(string stdId)
+        public void Remove(string stdId)
         {
             _StudentList.RemoveAll(it => it.studentId == stdId);
         }
