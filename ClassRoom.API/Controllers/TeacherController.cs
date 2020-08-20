@@ -21,7 +21,7 @@ namespace ClassRoom.API.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        public List<TeacherModel> GetTeacher()
+        public async Task<ActionResult<List<TeacherModel>>> GetTeacher()
         {
             return _TeacherService.GetTeacher(); ;
         }
@@ -32,9 +32,14 @@ namespace ClassRoom.API.Controllers
         /// <param name="StdId"></param>
         /// <returns></returns>
         [HttpGet("{StdId}")]
-        public TeacherModel GetTeacherById(string StdId)
+        public async Task<ActionResult<TeacherModel>> GetTeacherById(string StdId)
         {
-            return _TeacherService.GetTeacherById(StdId);
+            var teacher = _TeacherService.GetTeacherById(StdId);
+            if (teacher == null)
+            {
+                return NotFound();
+            }
+            return teacher;
         }
 
         /// <summary>
@@ -52,9 +57,17 @@ namespace ClassRoom.API.Controllers
         /// </summary>
         /// <param name="data"></param>
         [HttpPut("{TeacherModel}")]
-        public void EditTeacher([FromBody] TeacherModel data)
+        public async Task<IActionResult> EditTeacher([FromBody] TeacherModel data)
         {
-            _TeacherService.EditTeacher(data);
+            var result = _TeacherService.EditTeacher(data);
+            if (result)
+            {
+                return Ok();
+            }
+            else
+            {
+                return BadRequest();
+            }
         }
 
         /// <summary>
@@ -62,9 +75,19 @@ namespace ClassRoom.API.Controllers
         /// </summary>
         /// <param name="techID"></param>
         [HttpDelete("{techID}")]
-        public void DeleteTeacher(string techID)
+        public async Task<IActionResult> DeleteTeacher(string techID)
         {
-            _TeacherService.RemoveTeacher(techID);
+            var validate = _TeacherService.GetTeacherById(techID);
+            if (validate != null)
+            {
+                _TeacherService.RemoveTeacher(techID);
+                return Ok();
+            }
+            else
+            {
+                return BadRequest();
+            }
+            
         }
     }
 }

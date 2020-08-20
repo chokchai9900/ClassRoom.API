@@ -21,7 +21,7 @@ namespace ClassRoom.API.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        public List<StudentModel> GetStudent()
+        public async Task<ActionResult<List<StudentModel>>> GetStudent()
         {
             return _StudentService.GetStudent(); ;
         }
@@ -32,9 +32,14 @@ namespace ClassRoom.API.Controllers
         /// <param name="StdId"></param>
         /// <returns></returns>
         [HttpGet("{StdId}")]
-        public StudentModel GetStudentById(string StdId)
+        public async Task<ActionResult<StudentModel>> GetStudentById(string StdId)
         {
-            return _StudentService.GetStudentById(StdId);
+            var student = _StudentService.GetStudentById(StdId);
+            if (student == null)
+            {
+                return NotFound();
+            }
+            return student;
         }
 
         /// <summary>
@@ -52,9 +57,17 @@ namespace ClassRoom.API.Controllers
         /// </summary>
         /// <param name="data"></param>
         [HttpPut("{StudentModel}")]
-        public void EditStudent([FromBody] StudentModel data)
+        public async Task<IActionResult> EditStudent([FromBody] StudentModel data)
         {
-            _StudentService.EditStudent(data);
+            var result = _StudentService.EditStudent(data);
+            if (result)
+            {
+                return Ok();
+            }
+            else
+            {
+                return BadRequest();
+            }
         }
 
         /// <summary>
@@ -62,9 +75,18 @@ namespace ClassRoom.API.Controllers
         /// </summary>
         /// <param name="stdId"></param>
         [HttpDelete("{stdId}")]
-        public void DeleteStudent(string stdId)
+        public async Task<IActionResult> DeleteStudent(string stdId)
         {
-            _StudentService.RemoveStudent(stdId);
+            var validate = _StudentService.GetStudentById(stdId);
+            if (validate != null)
+            {
+                _StudentService.RemoveStudent(stdId);
+                return Ok();
+            }
+            else
+            {
+                return BadRequest();
+            }
         }
     }
 }

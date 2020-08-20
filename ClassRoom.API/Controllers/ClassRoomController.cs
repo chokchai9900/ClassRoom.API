@@ -21,7 +21,7 @@ namespace ClassRoom.API.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        public List<ClassRoomModel> GetClassroom()
+        public async Task<ActionResult<List<ClassRoomModel>>> GetClassroom()
         {
             return _ClassRoomservice.GetClassRoom();
         }
@@ -31,16 +31,21 @@ namespace ClassRoom.API.Controllers
         /// <param name="ClassRoomID"></param>
         /// <returns></returns>
         [HttpGet("{ClassRoomID}")]
-        public ClassRoomModel GetClassRoomByID(string ClassRoomID)
+        public async Task<ActionResult<ClassRoomModel>> GetClassRoomByID(string ClassRoomID)
         {
-            return _ClassRoomservice.GetDataByClassRoomId(ClassRoomID);
+            var classroom = _ClassRoomservice.GetDataByClassRoomId(ClassRoomID);
+            if (classroom == null)
+            {
+                return NotFound();
+            }
+            return classroom;
         }
         /// <summary>
         /// Create ClassRoom
         /// </summary>
         /// <param name="classroomId"></param>
         /// <param name="classroomName"></param>
-        [HttpPost("{classroomId,classroomName}")]
+        [HttpPost]
         public void CreateClassRoom(string classroomId, string classroomName)
         {
             _ClassRoomservice.CreateClassRoom(classroomId, classroomName);
@@ -50,29 +55,55 @@ namespace ClassRoom.API.Controllers
         /// </summary>
         /// <param name="classId"></param>
         /// <param name="teacherId"></param>
-        [HttpPut("{classId,teacherId}")]
-        public void AddTeacher(string classId, string teacherId)
+        [HttpPut("{teacherId}")]
+        public async Task<IActionResult> AddTeacher(string classId, string teacherId)
         {
-            _ClassRoomservice.AddTeacherInClassByClassRoomId(classId, teacherId);
+            var result = _ClassRoomservice.AddTeacherInClassByClassRoomId(classId, teacherId);
+            if (result)
+            {
+                return Ok();
+            }
+            else
+            {
+                return BadRequest();
+            }
         }
         /// <summary>
         /// Add Student  in classroom by id
         /// </summary>
         /// <param name="classId"></param>
         /// <param name="studentId"></param>
-        [HttpPut("{classId,studentId}")]
-        public void AddStudent(string classId, string studentId)
+        [HttpPut("{studentId}")]
+        public async Task<IActionResult> AddStudent(string classId, string studentId)
         {
-            _ClassRoomservice.AddTeacherInClassByClassRoomId(classId, studentId);
+            var result =  _ClassRoomservice.AddTeacherInClassByClassRoomId(classId, studentId);
+            if (result)
+            {
+                return Ok();
+            }
+            else
+            {
+                return BadRequest();
+            }
         }
         /// <summary>
         /// delete classroom
         /// </summary>
         /// <param name="ClassRoomId"></param>
         [HttpDelete("{ClassRoomId}")]
-        public void DeleteClassRoom(string ClassRoomId)
+        public async Task<IActionResult> DeleteClassRoom(string ClassRoomId)
         {
-            _ClassRoomservice.RemoveClassRoom(ClassRoomId);
+            var validate = _ClassRoomservice.GetDataByClassRoomId(ClassRoomId);
+            if (validate != null)
+            {
+                _ClassRoomservice.RemoveClassRoom(ClassRoomId);
+                return Ok();
+            }
+            else
+            {
+                return BadRequest();
+            }
+            
         }
     }
 }
