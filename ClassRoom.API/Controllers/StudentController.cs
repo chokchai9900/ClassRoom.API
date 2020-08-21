@@ -21,7 +21,7 @@ namespace ClassRoom.API.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        public async Task<ActionResult<List<StudentModel>>> GetStudent()
+        public ActionResult<List<StudentModel>> GetStudent()
         {
             return _StudentService.Get(); ;
         }
@@ -32,7 +32,7 @@ namespace ClassRoom.API.Controllers
         /// <param name="StdId"></param>
         /// <returns></returns>
         [HttpGet("{StdId}")]
-        public async Task<ActionResult<StudentModel>> GetStudentById(string StdId)
+        public ActionResult<StudentModel> GetStudentById(string StdId)
         {
             var student = _StudentService.GetById(StdId);
             if (student == null)
@@ -57,7 +57,7 @@ namespace ClassRoom.API.Controllers
         /// </summary>
         /// <param name="data"></param>
         [HttpPut("{StudentModel}")]
-        public async Task<IActionResult> EditStudent([FromBody] StudentModel data)
+        public IActionResult EditStudent([FromBody] StudentModel data)
         {
             var result = _StudentService.Edit(data);
             if (result)
@@ -75,7 +75,7 @@ namespace ClassRoom.API.Controllers
         /// </summary>
         /// <param name="stdId"></param>
         [HttpDelete("{stdId}")]
-        public async Task<IActionResult> DeleteStudent(string stdId)
+        public IActionResult DeleteStudent(string stdId)
         {
             var validate = _StudentService.GetById(stdId);
             if (validate != null)
