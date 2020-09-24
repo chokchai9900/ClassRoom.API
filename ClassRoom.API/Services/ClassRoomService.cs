@@ -1,4 +1,6 @@
-﻿using ClassRoom.API.Models;
+﻿using ClassRoom.API.Interface;
+using ClassRoom.API.Models;
+using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,30 +9,36 @@ using System.Threading.Tasks;
 
 namespace ClassRoom.API.Services
 {
-    public class ClassRoomService : IClassRoomRepository
+    public class ClassRoomService : IClassRoomRepository<ClassRoomModel>
     {
-        private List<StudentModel> _StudentList = new List<StudentModel>();
-        private List<TeacherModel> _TeacherList = new List<TeacherModel>();
-        private List<ClassRoomModel> _ClassRoomsList = new List<ClassRoomModel>();
+        static readonly DBContext _dBContext = new DBContext();
+        public IMongoCollection<StudentModel> connectStudentCollection { get; set; }
+        public IMongoCollection<TeacherModel> connectTeacherCollection { get; set; }
+        public IMongoCollection<ClassRoomModel> connectClassRoomCollection { get; set; }
 
         public ClassRoomService()
         {
-
+            connectStudentCollection = _dBContext.MongoCollectionStudent();
+            connectTeacherCollection = _dBContext.MongoCollectionTeacher();
+            connectClassRoomCollection = _dBContext.MongoCollectionClassroom();
         }
 
-        public bool AddStudentInClassByClassRoomId(string classId, string stdId)
+        public async Task<bool> AddStudentInClassByClassRoomIdAsync(string classId, string stdId)
         {
             if (stdId == null || classId == null)
             {
                 throw new ArgumentNullException("data");
             }
-            var classRoom = _ClassRoomsList.Find(it => it.classRoomId == classId);
-            var student = _StudentList.Find(it => it.studentId == stdId);
+            var classRoom = connectClassRoomCollection.Find(it => it.classRoomId == classId).FirstOrDefault();
+            var student = connectStudentCollection.Find(it => it.studentId == stdId).FirstOrDefault();
             var validate = Array.Find(classRoom.classStudent, it => it.studentId == stdId);
             var addindex = classRoom.classStudent.Count();
-            if (validate != null)
+            if (validate == null)
             {
                 classRoom.classStudent[addindex] = student;
+                var def = Builders<ClassRoomModel>.Update
+                    .Set(x => x.classStudent, classRoom.classStudent);
+                connectClassRoomCollection.UpdateOne(it => it.classRoomId == classRoom.classRoomId,def);
                 return true;
             }
             else
@@ -38,19 +46,22 @@ namespace ClassRoom.API.Services
                 return false;
             }
         }
-        public bool AddTeacherInClassByClassRoomId(string classId, string teacherId)
+        public async Task<bool> AddTeacherInClassByClassRoomId(string classId, string teacherId)
         {
             if (teacherId == null || classId == null)
             {
                 throw new ArgumentNullException("data");
             }
-            var classRoom = _ClassRoomsList.Find(it => it.classRoomId == classId);
-            var teacher = _TeacherList.Find(it => it.teacherId == teacherId);
+            var classRoom = connectClassRoomCollection.Find(it => it.classRoomId == classId).FirstOrDefault();
+            var teacher = connectTeacherCollection.Find(it => it.teacherId == teacherId).FirstOrDefault();
             var validate = Array.Find(classRoom.classTeacher, it => it.teacherId == teacherId);
             var addindex = classRoom.classTeacher.Count();
             if (validate != null)
             {
                 classRoom.classTeacher[addindex] = teacher;
+                var def = Builders<ClassRoomModel>.Update
+                    .Set(x => x.classTeacher, classRoom.classTeacher);
+                connectClassRoomCollection.UpdateOne(it => it.classRoomId == classRoom.classRoomId, def);
                 return true;
             }
             else
@@ -58,7 +69,7 @@ namespace ClassRoom.API.Services
                 return false;
             }
         }
-        public ClassRoomModel CreateClassRoom(string classroomId, string classroomName)
+        public async Task<ClassRoomModel> CreateClassRoom(string classroomId, string classroomName)
         {
             var newRoom = new ClassRoomModel()
             {
@@ -67,20 +78,20 @@ namespace ClassRoom.API.Services
                 classStudent = null,
                 classTeacher = null
             };
-            _ClassRoomsList.Add(newRoom);
+            connectClassRoomCollection.InsertOne(newRoom);
             return newRoom;
         }
-        public List<ClassRoomModel> GetClassRoom()
+        public async Task<List<ClassRoomModel>> GetClassRoom()
         {
-            return _ClassRoomsList;
+            return connectClassRoomCollection.Find(it => true).ToList();
         }
-        public ClassRoomModel GetDataByClassRoomId(string id)
+        public async Task<ClassRoomModel> GetDataByClassRoomId(string id)
         {
-            return _ClassRoomsList.Find(it => it.classRoomId == id);
+            return connectClassRoomCollection.Find(it => it.classRoomId == id).FirstOrDefault();
         }
         public void RemoveClassRoom(string ClassRoomId)
         {
-            _ClassRoomsList.RemoveAll(it => it.classRoomId == ClassRoomId);
+            connectClassRoomCollection.DeleteOne(it => it.classRoomId == ClassRoomId);
         }
     }
 }

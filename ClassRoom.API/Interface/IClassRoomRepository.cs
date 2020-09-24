@@ -5,13 +5,13 @@ using System.Threading.Tasks;
 
 namespace ClassRoom.API.Models
 {
-    interface IClassRoomRepository
+    interface IClassRoomRepository<T>
     {
-        List<ClassRoomModel> GetClassRoom();
-        ClassRoomModel GetDataByClassRoomId(string id);
-        ClassRoomModel CreateClassRoom(string classroomId,string classroomName);
-        bool AddTeacherInClassByClassRoomId(string classId, string teacherId);
-        bool AddStudentInClassByClassRoomId(string classId, string stdId);
+        public Task<List<T>> GetClassRoom();
+        public Task<T> GetDataByClassRoomId(string id);
+        public Task<T> CreateClassRoom(string classroomId,string classroomName);
+        public Task<bool> AddTeacherInClassByClassRoomId(string classId, string teacherId);
+        public Task<bool> AddStudentInClassByClassRoomIdAsync(string classId, string stdId);
         void RemoveClassRoom(string ClassRoomId);
     }
 }

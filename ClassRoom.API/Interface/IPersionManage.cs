@@ -8,10 +8,10 @@ namespace ClassRoom.API.Interface
 {
     interface IPersionManage<T>
     {
-        public List<T> Get();
-        public T GetById(string id);
-        public T Create(T data);
-        public bool Edit(T TeacherData);
+        public Task<List<T>> Get();
+        public Task<T> GetById(string id);
+        public Task<T> Create(T data);
+        public Task<bool> Edit(T TeacherData);
         public void Remove(string TeacherId);
     }
 }

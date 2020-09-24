@@ -1,5 +1,6 @@
 ﻿using ClassRoom.API.Interface;
 using ClassRoom.API.Models;
+using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,46 +10,52 @@ namespace ClassRoom.API.Services
 {
     public class StudentService : IPersionManage<StudentModel>
     {
-        private List<StudentModel> _StudentList = new List<StudentModel>();
-        public StudentModel Create(StudentModel data)
+        static readonly DBContext _dBContext = new DBContext();
+        public IMongoCollection<StudentModel> connectStudentCollection = _dBContext.MongoCollectionStudent();
+
+        //public StudentService()
+        //{
+        //    connectStudentCollection = _dBContext.MongoCollectionStudent();
+        //}
+
+        public async Task<StudentModel> Create(StudentModel data)
         {
             if (data == null)
             {
                 throw new ArgumentNullException("data");
             }
-            _StudentList.Add(data);
+            connectStudentCollection.InsertOne(data);
             return data;
         }
 
-        public bool Edit(StudentModel stdData)
+        public async Task<bool> Edit(StudentModel stdData)
         {
             if (stdData == null)
             {
                 throw new ArgumentNullException("data");
             }
-            int index = _StudentList.FindIndex(p => p.studentId == stdData.studentId);
-            if (index == -1)
-            {
-                return false;
-            }
-            _StudentList.RemoveAt(index);
-            _StudentList.Add(stdData);
+            var def = Builders<StudentModel>.Update
+                .Set(x => x.studentId, stdData.studentId)
+                .Set(x => x.studentName, stdData.studentName)
+                .Set(x => x.studentAge, stdData.studentAge)
+                .Set(x => x.studentTel, stdData.studentTel);
+            connectStudentCollection.UpdateOne(x => x.studentId == stdData.studentId, def);
             return true;
         }
 
-        public List<StudentModel> Get()
+        public async Task<List<StudentModel>> Get()
         {
-            return _StudentList;
+            return connectStudentCollection.Find(it => true).ToList();
         }
 
-        public StudentModel GetById(string id)
+        public async Task<StudentModel> GetById(string id)
         {
-            return _StudentList.Find(it => it.studentId == id);
+            return connectStudentCollection.Find(it => it.studentId == id).FirstOrDefault();
         }
 
         public void Remove(string stdId)
         {
-            _StudentList.RemoveAll(it => it.studentId == stdId);
+            connectStudentCollection.DeleteMany(it => it.studentId == stdId);
         }
     }
 }

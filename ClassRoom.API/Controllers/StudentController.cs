@@ -21,9 +21,9 @@ namespace ClassRoom.API.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        public ActionResult<List<StudentModel>> GetStudent()
+        public async Task<ActionResult<List<StudentModel>>> GetStudentAsync()
         {
-            return _StudentService.Get(); ;
+            return await _StudentService.Get(); ;
         }
 
         /// <summary>
@@ -32,14 +32,14 @@ namespace ClassRoom.API.Controllers
         /// <param name="StdId"></param>
         /// <returns></returns>
         [HttpGet("{StdId}")]
-        public ActionResult<StudentModel> GetStudentById(string StdId)
+        public async Task<ActionResult<StudentModel>> GetStudentByIdAsync(string StdId)
         {
             var student = _StudentService.GetById(StdId);
             if (student == null)
             {
                 return NotFound();
             }
-            return student;
+            return await student;
         }
 
         /// <summary>
@@ -57,9 +57,9 @@ namespace ClassRoom.API.Controllers
         /// </summary>
         /// <param name="data"></param>
         [HttpPut("{StudentModel}")]
-        public IActionResult EditStudent([FromBody] StudentModel data)
+        public async Task<IActionResult> EditStudentAsync([FromBody] StudentModel data)
         {
-            var result = _StudentService.Edit(data);
+            var result = await _StudentService.Edit(data);
             if (result)
             {
                 return Ok();

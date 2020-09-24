@@ -10,15 +10,15 @@ namespace ClassRoom.API.Controllers
     [ApiController]
     public class ClassRoomController : ControllerBase
     {
-        static readonly IClassRoomRepository _ClassRoomservice = new ClassRoomService();
+        static readonly IClassRoomRepository<ClassRoomModel> _ClassRoomservice = new ClassRoomService();
         /// <summary>
         /// Get All Classroom
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        public async Task<ActionResult<List<ClassRoomModel>>> GetClassroom()
+        public async Task<ActionResult<List<ClassRoomModel>>> GetClassroomAsync()
         {
-            return _ClassRoomservice.GetClassRoom();
+            return await _ClassRoomservice.GetClassRoom();
         }
         /// <summary>
         /// Get classroom by id
@@ -26,14 +26,14 @@ namespace ClassRoom.API.Controllers
         /// <param name="ClassRoomID"></param>
         /// <returns></returns>
         [HttpGet("{ClassRoomID}")]
-        public async Task<ActionResult<ClassRoomModel>> GetClassRoomByID(string ClassRoomID)
+        public async Task<ActionResult<ClassRoomModel>> GetClassRoomByIDAsync(string ClassRoomID)
         {
             var classroom = _ClassRoomservice.GetDataByClassRoomId(ClassRoomID);
             if (classroom == null)
             {
                 return NotFound();
             }
-            return classroom;
+            return await classroom;
         }
         /// <summary>
         /// Create ClassRoom
@@ -48,12 +48,12 @@ namespace ClassRoom.API.Controllers
         /// <summary>
         /// Add Teacher  in classroom by id
         /// </summary>
-        /// <param name="classId"></param>
         /// <param name="teacherId"></param>
-        [HttpPut("{teacherId}")]
-        public async Task<IActionResult> AddTeacher(string classId, string teacherId)
+        /// <param name="classId"></param>
+        [HttpPut("AddTeacherAsync/{teacherId}")]
+        public async Task<IActionResult> AddTeacherAsync(string teacherId, string classId)
         {
-            var result = _ClassRoomservice.AddTeacherInClassByClassRoomId(classId, teacherId);
+            var result = await _ClassRoomservice.AddTeacherInClassByClassRoomId(classId, teacherId);
             if (result)
             {
                 return Ok();
@@ -66,12 +66,12 @@ namespace ClassRoom.API.Controllers
         /// <summary>
         /// Add Student  in classroom by id
         /// </summary>
-        /// <param name="classId"></param>
         /// <param name="studentId"></param>
-        [HttpPut("{studentId}")]
-        public async Task<IActionResult> AddStudent(string classId, string studentId)
+        /// <param name="classId"></param>
+        [HttpPut("AddStudentAsync/{studentId}")]
+        public async Task<IActionResult> AddStudentAsync(string studentId, string classId)
         {
-            var result =  _ClassRoomservice.AddTeacherInClassByClassRoomId(classId, studentId);
+            var result = await _ClassRoomservice.AddStudentInClassByClassRoomIdAsync(classId, studentId);
             if (result)
             {
                 return Ok();
@@ -86,7 +86,7 @@ namespace ClassRoom.API.Controllers
         /// </summary>
         /// <param name="ClassRoomId"></param>
         [HttpDelete("{ClassRoomId}")]
-        public async Task<IActionResult> DeleteClassRoom(string ClassRoomId)
+        public IActionResult DeleteClassRoom(string ClassRoomId)
         {
             var validate = _ClassRoomservice.GetDataByClassRoomId(ClassRoomId);
             if (validate != null)
@@ -98,7 +98,7 @@ namespace ClassRoom.API.Controllers
             {
                 return BadRequest();
             }
-            
+
         }
     }
 }

@@ -19,9 +19,9 @@ namespace ClassRoom.API.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        public ActionResult<List<TeacherModel>> GetTeacher()
+        public async Task<ActionResult<List<TeacherModel>>> GetTeacherAsync()
         {
-            return _TeacherService.Get(); ;
+            return await _TeacherService.Get(); ;
         }
 
         /// <summary>
@@ -30,14 +30,14 @@ namespace ClassRoom.API.Controllers
         /// <param name="StdId"></param>
         /// <returns></returns>
         [HttpGet("{StdId}")]
-        public ActionResult<TeacherModel> GetTeacherById(string StdId)
+        public async Task<ActionResult<TeacherModel>> GetTeacherByIdAsync(string StdId)
         {
             var teacher = _TeacherService.GetById(StdId);
             if (teacher == null)
             {
                 return NotFound();
             }
-            return teacher;
+            return await teacher;
         }
 
         /// <summary>
@@ -55,9 +55,9 @@ namespace ClassRoom.API.Controllers
         /// </summary>
         /// <param name="data"></param>
         [HttpPut("{TeacherModel}")]
-        public IActionResult EditTeacher([FromBody] TeacherModel data)
+        public async Task<IActionResult> EditTeacherAsync([FromBody] TeacherModel data)
         {
-            var result = _TeacherService.Edit(data);
+            var result = await _TeacherService.Edit(data);
             if (result)
             {
                 return Ok();
