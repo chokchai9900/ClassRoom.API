@@ -11,6 +11,9 @@ namespace ClassRoom.API.Controllers
     public class ClassRoomController : ControllerBase
     {
         static readonly IClassRoomRepository<ClassRoomModel> _ClassRoomservice = new ClassRoomService();
+
+        internal static IClassRoomRepository<ClassRoomModel> ClassRoomservice => _ClassRoomservice;
+
         /// <summary>
         /// Get All Classroom
         /// </summary>
@@ -18,7 +21,7 @@ namespace ClassRoom.API.Controllers
         [HttpGet]
         public async Task<ActionResult<List<ClassRoomModel>>> GetClassroomAsync()
         {
-            return await _ClassRoomservice.GetClassRoom();
+            return await ClassRoomservice.GetClassRoom();
         }
         /// <summary>
         /// Get classroom by id
@@ -28,7 +31,7 @@ namespace ClassRoom.API.Controllers
         [HttpGet("{ClassRoomID}")]
         public async Task<ActionResult<ClassRoomModel>> GetClassRoomByIDAsync(string ClassRoomID)
         {
-            var classroom = _ClassRoomservice.GetDataByClassRoomId(ClassRoomID);
+            var classroom = ClassRoomservice.GetDataByClassRoomId(ClassRoomID);
             if (classroom == null)
             {
                 return NotFound();
@@ -43,7 +46,7 @@ namespace ClassRoom.API.Controllers
         [HttpPost]
         public void CreateClassRoom(string classroomId, string classroomName)
         {
-            _ClassRoomservice.CreateClassRoom(classroomId, classroomName);
+            ClassRoomservice.CreateClassRoom(classroomId, classroomName);
         }
         /// <summary>
         /// Add Teacher  in classroom by id
@@ -53,7 +56,7 @@ namespace ClassRoom.API.Controllers
         [HttpPut("AddTeacherAsync/{teacherId}")]
         public async Task<IActionResult> AddTeacherAsync(string teacherId, string classId)
         {
-            var result = await _ClassRoomservice.AddTeacherInClassByClassRoomId(classId, teacherId);
+            var result = await ClassRoomservice.AddTeacherInClassByClassRoomId(classId, teacherId);
             if (result)
             {
                 return Ok();
@@ -71,7 +74,7 @@ namespace ClassRoom.API.Controllers
         [HttpPut("AddStudentAsync/{studentId}")]
         public async Task<IActionResult> AddStudentAsync(string studentId, string classId)
         {
-            var result = await _ClassRoomservice.AddStudentInClassByClassRoomIdAsync(classId, studentId);
+            var result = await ClassRoomservice.AddStudentInClassByClassRoomIdAsync(classId, studentId);
             if (result)
             {
                 return Ok();
@@ -88,10 +91,10 @@ namespace ClassRoom.API.Controllers
         [HttpDelete("{ClassRoomId}")]
         public IActionResult DeleteClassRoom(string ClassRoomId)
         {
-            var validate = _ClassRoomservice.GetDataByClassRoomId(ClassRoomId);
+            var validate = ClassRoomservice.GetDataByClassRoomId(ClassRoomId);
             if (validate != null)
             {
-                _ClassRoomservice.RemoveClassRoom(ClassRoomId);
+                ClassRoomservice.RemoveClassRoom(ClassRoomId);
                 return Ok();
             }
             else

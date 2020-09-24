@@ -16,6 +16,9 @@ namespace ClassRoom.API.Controllers
     public class StudentController : ControllerBase
     {
         static readonly IPersionManage<StudentModel> _StudentService = new StudentService();
+
+        internal static IPersionManage<StudentModel> StudentService => _StudentService;
+
         /// <summary>
         /// Get All Student
         /// </summary>
@@ -23,7 +26,7 @@ namespace ClassRoom.API.Controllers
         [HttpGet]
         public async Task<ActionResult<List<StudentModel>>> GetStudentAsync()
         {
-            return await _StudentService.Get(); ;
+            return await StudentService.Get(); ;
         }
 
         /// <summary>
@@ -34,7 +37,7 @@ namespace ClassRoom.API.Controllers
         [HttpGet("{StdId}")]
         public async Task<ActionResult<StudentModel>> GetStudentByIdAsync(string StdId)
         {
-            var student = _StudentService.GetById(StdId);
+            var student = StudentService.GetById(StdId);
             if (student == null)
             {
                 return NotFound();
@@ -49,7 +52,7 @@ namespace ClassRoom.API.Controllers
         [HttpPost]
         public void CreateStudent([FromBody] StudentModel data)
         {
-            _StudentService.Create(data);
+            StudentService.Create(data);
         }
 
         /// <summary>
@@ -59,7 +62,7 @@ namespace ClassRoom.API.Controllers
         [HttpPut("{StudentModel}")]
         public async Task<IActionResult> EditStudentAsync([FromBody] StudentModel data)
         {
-            var result = await _StudentService.Edit(data);
+            var result = await StudentService.Edit(data);
             if (result)
             {
                 return Ok();
@@ -77,10 +80,10 @@ namespace ClassRoom.API.Controllers
         [HttpDelete("{stdId}")]
         public IActionResult DeleteStudent(string stdId)
         {
-            var validate = _StudentService.GetById(stdId);
+            var validate = StudentService.GetById(stdId);
             if (validate != null)
             {
-                _StudentService.Remove(stdId);
+                StudentService.Remove(stdId);
                 return Ok();
             }
             else

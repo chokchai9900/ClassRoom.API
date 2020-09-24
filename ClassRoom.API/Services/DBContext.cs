@@ -10,33 +10,33 @@ namespace ClassRoom.API.Services
 {
     public class DBContext
     {
-        public static IMongoCollection<StudentModel> collectionStudent { get; set; }
-        public static IMongoCollection<TeacherModel> collectionTeacher { get; set; }
-        public static IMongoCollection<ClassRoomModel> collectionClassRoom { get; set; }
+        public static IMongoCollection<StudentModel> CollectionStudent { get; set; }
+        public static IMongoCollection<TeacherModel> CollectionTeacher { get; set; }
+        public static IMongoCollection<ClassRoomModel> CollectionClassRoom { get; set; }
 
-        public static void dbConnection()
+        public static void DbConnection()
         {
             var mongo = new MongoClient("mongodb+srv://ccbloodrainz:wK9Il7wsh15rvLTf@cluster0.ymd29.azure.mongodb.net/CheckInClassroom?retryWrites=true&w=majority");
             var database = mongo.GetDatabase("CheckInClassroom");
-            collectionStudent = database.GetCollection<StudentModel>("Student");
-            collectionTeacher = database.GetCollection<TeacherModel>("Teacher");
-            collectionClassRoom = database.GetCollection<ClassRoomModel>("Classroom");
+            CollectionStudent = database.GetCollection<StudentModel>("Student");
+            CollectionTeacher = database.GetCollection<TeacherModel>("Teacher");
+            CollectionClassRoom = database.GetCollection<ClassRoomModel>("Classroom");
         }
 
         public IMongoCollection<StudentModel> MongoCollectionStudent()
         {
-            dbConnection();
-            return collectionStudent;
+            DbConnection();
+            return CollectionStudent;
         }
         public IMongoCollection<TeacherModel> MongoCollectionTeacher()
         {
-            dbConnection();
-            return collectionTeacher;
+            DbConnection();
+            return CollectionTeacher;
         }
         public IMongoCollection<ClassRoomModel> MongoCollectionClassroom()
         {
-            dbConnection();
-            return collectionClassRoom;
+            DbConnection();
+            return CollectionClassRoom;
         }
     }
 }

@@ -11,7 +11,11 @@ namespace ClassRoom.API.Services
     public class StudentService : IPersionManage<StudentModel>
     {
         static readonly DBContext _dBContext = new DBContext();
-        public IMongoCollection<StudentModel> connectStudentCollection = _dBContext.MongoCollectionStudent();
+        private IMongoCollection<StudentModel> connectStudentCollection = DBContext.MongoCollectionStudent();
+
+        public static DBContext DBContext => _dBContext;
+
+        public IMongoCollection<StudentModel> ConnectStudentCollection { get => connectStudentCollection; set => connectStudentCollection = value; }
 
         //public StudentService()
         //{
@@ -24,7 +28,7 @@ namespace ClassRoom.API.Services
             {
                 throw new ArgumentNullException("data");
             }
-            connectStudentCollection.InsertOne(data);
+            ConnectStudentCollection.InsertOne(data);
             return data;
         }
 
@@ -39,23 +43,23 @@ namespace ClassRoom.API.Services
                 .Set(x => x.studentName, stdData.studentName)
                 .Set(x => x.studentAge, stdData.studentAge)
                 .Set(x => x.studentTel, stdData.studentTel);
-            connectStudentCollection.UpdateOne(x => x.studentId == stdData.studentId, def);
+            ConnectStudentCollection.UpdateOne(x => x.studentId == stdData.studentId, def);
             return true;
         }
 
         public async Task<List<StudentModel>> Get()
         {
-            return connectStudentCollection.Find(it => true).ToList();
+            return ConnectStudentCollection.Find(it => true).ToList();
         }
 
         public async Task<StudentModel> GetById(string id)
         {
-            return connectStudentCollection.Find(it => it.studentId == id).FirstOrDefault();
+            return ConnectStudentCollection.Find(it => it.studentId == id).FirstOrDefault();
         }
 
         public void Remove(string stdId)
         {
-            connectStudentCollection.DeleteMany(it => it.studentId == stdId);
+            ConnectStudentCollection.DeleteMany(it => it.studentId == stdId);
         }
     }
 }

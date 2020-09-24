@@ -11,10 +11,13 @@ namespace ClassRoom.API.Services
     public class TeacherService : IPersionManage<TeacherModel>
     {
         static readonly DBContext _dBContext = new DBContext();
-        public IMongoCollection<TeacherModel> connectTeacherCollection { get; set; }
+        public IMongoCollection<TeacherModel> ConnectTeacherCollection { get; set; }
+
+        public static DBContext DBContext => _dBContext;
+
         public TeacherService()
         {
-            connectTeacherCollection = _dBContext.MongoCollectionTeacher();
+            ConnectTeacherCollection = _dBContext.MongoCollectionTeacher();
         }
         public async Task<TeacherModel> Create(TeacherModel data)
         {
@@ -22,7 +25,7 @@ namespace ClassRoom.API.Services
             {
                 throw new ArgumentNullException("data");
             }
-            connectTeacherCollection.InsertOne(data);
+            ConnectTeacherCollection.InsertOne(data);
             return data;
         }
 
@@ -37,23 +40,23 @@ namespace ClassRoom.API.Services
                 .Set(x => x.teacherName, TeacherData.teacherName)
                 .Set(x => x.teacherTel, TeacherData.teacherTel)
                 .Set(x => x.subjectTaught, TeacherData.subjectTaught);
-            connectTeacherCollection.UpdateOne(x => x.teacherId == TeacherData.teacherId, def);
+            ConnectTeacherCollection.UpdateOne(x => x.teacherId == TeacherData.teacherId, def);
             return true;
         }
 
         public async Task<List<TeacherModel>> Get()
         {
-            return connectTeacherCollection.Find(it => true).ToList();
+            return ConnectTeacherCollection.Find(it => true).ToList();
         }
 
         public async Task<TeacherModel> GetById(string id)
         {
-            return connectTeacherCollection.Find(it => it.teacherId == id).FirstOrDefault();
+            return ConnectTeacherCollection.Find(it => it.teacherId == id).FirstOrDefault();
         }
 
         public void Remove(string TeacherId)
         {
-            connectTeacherCollection.DeleteMany(it => it.teacherId == TeacherId);
+            ConnectTeacherCollection.DeleteMany(it => it.teacherId == TeacherId);
         }
     }
 }

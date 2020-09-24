@@ -14,6 +14,9 @@ namespace ClassRoom.API.Controllers
     {
         // GET: api/<Teacher>
         static readonly IPersionManage<TeacherModel> _TeacherService = new TeacherService();
+
+        internal static IPersionManage<TeacherModel> TeacherService => _TeacherService;
+
         /// <summary>
         /// Get All teacher
         /// </summary>
@@ -21,7 +24,7 @@ namespace ClassRoom.API.Controllers
         [HttpGet]
         public async Task<ActionResult<List<TeacherModel>>> GetTeacherAsync()
         {
-            return await _TeacherService.Get(); ;
+            return await TeacherService.Get(); ;
         }
 
         /// <summary>
@@ -32,7 +35,7 @@ namespace ClassRoom.API.Controllers
         [HttpGet("{StdId}")]
         public async Task<ActionResult<TeacherModel>> GetTeacherByIdAsync(string StdId)
         {
-            var teacher = _TeacherService.GetById(StdId);
+            var teacher = TeacherService.GetById(StdId);
             if (teacher == null)
             {
                 return NotFound();
@@ -47,7 +50,7 @@ namespace ClassRoom.API.Controllers
         [HttpPost]
         public void CreateTeacher([FromBody] TeacherModel data)
         {
-            _TeacherService.Create(data);
+            TeacherService.Create(data);
         }
 
         /// <summary>
@@ -57,7 +60,7 @@ namespace ClassRoom.API.Controllers
         [HttpPut("{TeacherModel}")]
         public async Task<IActionResult> EditTeacherAsync([FromBody] TeacherModel data)
         {
-            var result = await _TeacherService.Edit(data);
+            var result = await TeacherService.Edit(data);
             if (result)
             {
                 return Ok();
@@ -75,10 +78,10 @@ namespace ClassRoom.API.Controllers
         [HttpDelete("{techID}")]
         public IActionResult DeleteTeacher(string techID)
         {
-            var validate = _TeacherService.GetById(techID);
+            var validate = TeacherService.GetById(techID);
             if (validate != null)
             {
-                _TeacherService.Remove(techID);
+                TeacherService.Remove(techID);
                 return Ok();
             }
             else
